@@ -497,6 +497,21 @@ jobs:
         with:
           path: |
             cudart-llama-bin-win-cu${{ matrix.cuda }}-x64.zip
+  ios-xcode-build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Xcode
+        uses: actions/setup-xcode@v1
+        with:
+          xcode-version: 'latest' 
+
+      - name: Build Xcode project
+        run: xcodebuild -project examples/llama.swiftui/llama.swiftui.xcodeproj -scheme llama.swiftui -sdk iphoneos -destination 'generic/platform=iOS' build
+
 
 #  freeBSD-latest:
 #    runs-on: macos-12
