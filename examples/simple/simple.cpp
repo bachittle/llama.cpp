@@ -23,11 +23,14 @@ int main(int argc, char ** argv) {
     }
 
     if (params.prompt.empty()) {
-        params.prompt = "Hello my name is";
+        params.prompt = R"(<bos><start_of_turn>user
+Hello!<end_of_turn>
+<start_of_turn>model
+)";
     }
 
     // total length of the sequence including the prompt
-    const int n_len = 32;
+    const int n_len = 128;
 
     // init LLM
 
@@ -85,10 +88,10 @@ int main(int argc, char ** argv) {
     fprintf(stderr, "\n");
 
     for (auto id : tokens_list) {
-        fprintf(stderr, "%s", llama_token_to_piece(ctx, id).c_str());
+        fprintf(stdout, "%s", llama_token_to_piece(ctx, id).c_str());
     }
 
-    fflush(stderr);
+    fflush(stdout);
 
     // create a llama_batch with size 512
     // we use this object to submit token data for decoding
@@ -140,7 +143,8 @@ int main(int argc, char ** argv) {
                 break;
             }
 
-            LOG_TEE("%s", llama_token_to_piece(ctx, new_token_id).c_str());
+            // LOG_TEE("%s", llama_token_to_piece(ctx, new_token_id).c_str());
+            fprintf(stdout, "%s", llama_token_to_piece(ctx, new_token_id).c_str());
             fflush(stdout);
 
             // prepare the next batch
